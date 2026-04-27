@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Archeology of the Futures - Attenu</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,600;1,400&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
+
+<style>
+:root {
+--bg-color: #ffffff;
+--text-dark: #332B27;
+--text-light: #FFFFFF;
+--btn-color: #2B2A29;
+--accent-gray: #7A6F68;
+--border-light: #eeeeee;
+--overlay-bg: rgba(0, 0, 0, 0.85); 
+--modal-bg: #ffffff; 
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; padding: 0; background-color: var(--bg-color); font-family: 'Montserrat', sans-serif; color: var(--text-dark); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+.container { max-width: 1000px; margin: 0 auto; padding: 0 10px; }
+
+/* Hero Section */
+.hero { position: relative; height: 90vh; min-height: 600px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #000; }
+.hero-video { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
+
+.sub-heading { text-align: center; font-size: 1.2rem; font-weight: 600; letter-spacing: 4px; margin: 100px 0 60px; text-transform: uppercase; border-top: 1px solid var(--border-light); padding-top: 20px; }
+
+/* 视频网格 */
+.video-display-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 5px;
+    margin-bottom: 80px;
+}
+
+.video-item {
+    width: 100%;
+    background: #000;
+    line-height: 0;
+    overflow: hidden;
+    cursor: pointer;
+    aspect-ratio: 1 / 1;
+}
+
+.video-item video {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.video-item:hover video {
+    transform: scale(1.1);
+}
+
+
+/* 021 横向长条视频 */
+.wide-video-item {
+    grid-column: 1 / -1;
+    width: 100%;
+    background: #000;
+    line-height: 0;
+    overflow: hidden;
+    cursor: pointer;
+    aspect-ratio: 16 / 5;
+    margin-top: 5px;
+}
+
+.wide-video-item video {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.wide-video-item:hover video {
+    transform: scale(1.04);
+}
+
+/* === 弹窗 (Modal) 样式 === */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: var(--overlay-bg);
+    display: none; 
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(8px);
+}
+
+.modal-content {
+    background: var(--modal-bg);
+    width: 90%;
+    max-width: 600px; 
+    max-height: 90vh;
+    padding: 30px; 
+    position: relative;
+    overflow-y: auto;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+}
+
+.modal-close {
+    position: absolute;
+    top: 15px; right: 20px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--text-dark);
+    z-index: 10;
+}
+
+.modal-title {
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    color: var(--accent-gray);
+}
+
+.modal-video-container {
+    width: 100%;
+    height: auto;
+    background: #000;
+    margin-bottom: 20px;
+}
+.modal-video-container video {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.modal-text {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    color: #444;
+}
+
+.modal-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    margin-bottom: 20px;
+}
+
+/* 额外视频样式 (针对 022.mov) */
+#extra-video-wrapper {
+    display: none; /* 默认隐藏 */
+    margin-top: 10px;
+}
+.extra-video-box {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: #000;
+    margin-bottom: 8px;
+}
+.extra-video-box video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.extra-caption {
+    font-size: 0.75rem;
+    color: #888;
+    text-align: left;
+}
+
+.cta-section { text-align: center; margin: 50px 0; border-top: 1px solid var(--border-light); padding-top: 30px; }
+.btn { display: inline-block; background-color: var(--btn-color); color: var(--text-light); padding: 16px 45px; border-radius: 30px; text-decoration: none; font-size: 0.8rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; transition: opacity 0.3s; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+    <video autoplay muted loop class="hero-video">
+        <source src="21.mp4" type="video/mp4">
+    </video>
+</div>
+
+<div class="container">
+    <div class="sub-heading">OUTCOME</div>
+
+    <div class="video-display-grid">
+        <div class="video-item" onclick="openVideoModal('01.mov', 'In this TouchDesigner setup, I am experimenting with a procedural edge-stacking technique to transform a basic Noise TOP into a complex, granular texture. By chaining five consecutive Edge TOPs, I am essentially forcing the software to recursively detect the boundaries of previous edges, which breaks down the smooth gradients into the sharp, stippled aesthetic you see evolving in the thumbnails. I ve ended the chain with a Null to keep the workflow clean and modular, allowing this high-contrast, organic grit to be easily piped into the final Out for further displacement or masking.', '011.png')">
+            <video autoplay muted loop><source src="01.mov" type="video/mp4"></video>
+        </div>
+
+        <div class="video-item" onclick="openVideoModal('02.mov', 'In this iteration of my project, I have introduced a Feedback loop to add a temporal dimension to the granular texture I was building. By branching the signal from edge5 into a Feedback TOP and a Level TOP, then blending them back together using a Composite TOP, I am able to create a visual memory where the edges trail and bleed into one another. To wrap things up, I have piped the final output through KantanMapper, which allows me to take this procedurally generated grit and precisely mask or project it onto specific surfaces for a real-world installation vibe.', '022.png', '022.mov', 'use projector')">
+            <video autoplay muted loop><source src="02.mov" type="video/mp4"></video>
+        </div>
+
+        <div class="video-item" onclick="openVideoModal('03.mov', 'I have now evolved my system into a full 3D generative environment by using a Render TOP to capture a particle-like geometry driven by a Circle SOP and custom position data. To give the movement more soul, I implemented an rgbaDelay and a radialBlur to create a sense of speed and ethereal motion blur. The core of the visual depth comes from a sophisticated feedback loop integrated with an Add TOP, which allows the light trails to accumulate and glow over time. Finally, I processed the signal through a chroma key and level adjustments to ensure the center of the effect remains sharp and punchy before sending it to the final output.', '033.png')">
+            <video autoplay muted loop><source src="03.mov" type="video/mp4"></video>
+        </div>
+
+   
+           <div class="video-item" onclick="openVideoModal('04.mov', 'In this stage of my design, I am focusing on color mapping and interactive control within the generative system. I have started by using a Noise TOP to displace a simple Circle TOP, which breaks the geometry into organic fragments before passing through an Edge TOP for structural clarity. I integrated a Keyboard In CHOP to manually reset or influence the feedback loop, allowing for real-time interaction during the creative process. The most significant addition is the color grading section, where I use a Ramp TOP and a Lookup TOP driven by an LFO to dynamically cycle through vibrant color palettes. Finally, I used a Switch TOP to toggle between the raw noise textures and the colored results, ensuring the final output has both rhythmic movement and a polished visual identity.', '044.png')">
+            <video autoplay muted loop><source src="04.mov" type="video/mp4"></video>
+        </div>
+
+        <div class="video-item" onclick="openVideoModal('05.mov', 'In this stage of my project, I am refining the spatial composition of my generative geometry within a 3D rendering pipeline. I have set up a Constant CHOP to drive the speed and positioning of a point cloud system, which is then instanced through a Geometry COMP using a Circle SOP as the base form. By adjusting the perspective of the Camera COMP, I have transformed the abstract particle data into a sweeping, architectural landscape of light and shadow. To ensure the final visual is clean and ready for compositing, I have integrated an RGB Key TOP to isolate the brightness values before passing the signal through a Null for a stabilized output.', '055.png')">
+            <video autoplay muted loop><source src="05.mov" type="video/mp4"></video>
+        </div>
+
+        <div class="video-item" onclick="openVideoModal('06.mov', 'In this complex development of my network, I have scaled up the logic by nesting multiple feedback systems to achieve a highly textured and reactive visual state. I am combining the initial noise and edge-stacking sequence with a secondary feedback loop that uses a Transform TOP and a Limit TOP to control the recursive growth of the shapes. By mapping a Keyboard In CHOP to the reset parameters, I can performatively trigger visual bursts and clear the buffer in real-time. Finally, I have consolidated this intricate density through an RGB Key and piped it into KantanMapper, providing a professional interface for fitting these procedurally generated organic forms onto specific projection surfaces.', '066.png', '066.mov', 'use projector')">
+            <video autoplay muted loop><source src="06.mov" type="video/mp4"></video>
+        </div>
+
+         <div class="video-item" onclick="openVideoModal('07.mov', 'In this latest step, I have transitioned from flat particles to a solid 3D geometry setup by instancing a Box SOP within my rendering pipeline. I am using a Constant CHOP and a Speed CHOP to drive the transformation data, allowing the geometric form to react dynamically within the 3D space. To create a more gritty and tactile atmosphere, I introduced a Noise TOP as a background layer and blended it with the render using a Composite TOP. This results in a striking silhouette effect where the solid geometry interacts with a dense, digital grain, giving the final output a raw, industrial aesthetic that feels both structured and chaotic.', '077.png')">
+            <video autoplay muted loop><source src="07.mov" type="video/mp4"></video>
+        </div>
+
+           <div class="video-item" onclick="openVideoModal('08.mov', 'In this specific setup, I am exploring the interaction between clean geometric forms and dynamic colorful noise. I have used an LFO CHOP to modulate a multi-colored Noise TOP, creating a constantly shifting chromatic background that I then merged with a simple Circle TOP using a Composite TOP. To pull it all together, I applied an Edge TOP to the composite result, which effectively carves out the shape of the circle from the noise and creates a high-contrast, textured silhouette. This process allows me to maintain a clear focal point while injecting a sense of raw, vibrating energy into the final output.', '088.png')">
+            <video autoplay muted loop><source src="08.mov" type="video/mp4"></video>
+        </div>
+
+                   <div class="video-item" onclick="openVideoModal('09.mov', 'In this advanced stage of my design, I have developed a generative 3D system where a Tube SOP serves as the primary geometry, which I then subject to a complex series of spatial deformations. I am using a sequence of LFO CHOPs to drive a Feedback SOP and a Noise SOP at the geometry level, causing the tube to warp and mutate into an organic, crystalline form in real-time. This procedural mesh is then funneled through a standard rendering pipeline with a camera and light, while a final Composite TOP overlays a fine-grain noise layer to provide a cinematic, atmospheric finish to the distorted 3D silhouette.', '099.png')">
+            <video autoplay muted loop><source src="09.mov" type="video/mp4"></video>
+        </div>
+
+
+        <div class="video-item" onclick="openVideoModal('10.mov', 'In this phase of my design, I am integrating dynamic displacement and interactive color grading to bring more life to the procedural textures. I have started by using a Noise TOP to displace a Circle TOP, which shatters the uniform shape into organic fragments that are then sharpened by an Edge TOP. To create a sense of motion and persistence, I implemented a feedback loop controlled by a Keyboard In CHOP, alongside a color-mapping system where an LFO drives a Ramp and Lookup TOP to cycle through deep purple and blue palettes. By utilizing a Switch TOP to compare different noise layers and a Composite TOP to finalize the blend, I have achieved a rhythmic, high-contrast visual that is ready for projection via KantanMapper.', '010.png')">
+            <video autoplay muted loop><source src="10.mov" type="video/mp4"></video>
+        </div>
+
+         <div class="video-item" onclick="openVideoModal('11.mov', 'In this advanced iteration of my design, I am focusing on creating a highly fluid and organic particle system within a 3D environment. I have used a Point Generate SOP as the base, which is then heavily modulated by multiple LFO CHOPs driving a Feedback SOP and a Noise SOP to create a swirling, nebulous movement that feels like a digital organism. This procedurally warped geometry is instanced and rendered through a camera system, while the addition of an rgbaDelay TOP at the end of the chain introduces a subtle ghosting effect, allowing the particles to leave a faint, ethereal trail as they move through space before reaching the final output.', '0111.png')">
+            <video autoplay muted loop><source src="11.mov" type="video/mp4"></video>
+        </div>
+
+
+            <div class="video-item" onclick="openVideoModal('12.mov', 'In this final polish of my generative patch, I am emphasizing the contrast between structured geometry and fluid color cycles. By utilizing a Noise TOP to displace a Circle TOP, I have created an organic breakdown of the form, which is then refined through an Edge TOP and a transform-driven feedback loop for added visual persistence. I integrated an LFO and Math CHOP to modulate a Ramp and Lookup TOP, creating a dynamic shift between deep blues and vibrant magentas that wash over the grainy texture. Finally, I have routed the signal through a Switch TOP to select the most compelling visual state before outputting the result to KantanMapper for precise spatial mapping.', '0112.png', '012.mov', 'use projector')">
+            <video autoplay muted loop><source src="12.mov" type="video/mp4"></video>
+        </div>
+
+        <div class="video-item" onclick="openVideoModal('13.mov', 'In this updated workflow, I am pushing the limits of my 3D particle system by focusing on the fluidity of light and motion. I have established a robust foundation where a Constant CHOP drives the position and scale of instanced geometry, which is then captured through a Render TOP to create a concentrated core of light. The real evolution happens in the post-processing stage, where I have combined an rgbaDelay and rgbaBlur with a sophisticated feedback loop to create a blooming, ethereal trail effect. By using multiple Add TOPs and precise Level adjustments, I have managed to make the particles feel like they are smoldering and leaving a luminous path in the void, ensuring the final output has a high-dynamic range and a dreamlike, atmospheric quality.', '0113.png', '013.mov', 'use projector')">
+            <video autoplay muted loop><source src="13.mov" type="video/mp4"></video>
+        </div>
+
+        <div class="video-item" onclick="openVideoModal('14.mov', 'In this stage of my exploration, I am focusing on the skeletal structure of a generative point system by using a Point Generate SOP as my primary data source. I have introduced a modular geometry pipeline where the point cloud is processed through a Feedback SOP and a Noise SOP, both driven by LFO CHOPs to create a rhythmic, undulating motion that mimics organic swarming. By piping this deformed geometry into a 3D rendering setup—complete with a camera and instancing driven by a Constant CHOP—I’ve achieved a minimalist yet high-contrast visual. The final Out TOP captures the essence of these flickering, celestial particles as they dance through a dark, empty space, emphasizing the beauty of procedural randomness.', '0114.png')">
+            <video autoplay muted loop><source src="14.mov" type="video/mp4"></video>
+        </div>
+
+        <div class="video-item" onclick="openVideoModal('15.mov', 'In this final evolution of my procedural network, I’ve expanded the initial edge-stacking logic into a sophisticated, multi-layered feedback system. I began with the same iterative edge detection seen in the first image, but I have now branched that signal into two distinct feedback loops to create a more immersive and reactive texture. By incorporating a Keyboard In CHOP to manually trigger resets and using a combination of Displace and Transform TOPs, I’ve allowed the visual to bleed and warp dynamically over time. I finished the chain by compositing a secondary noise layer and using an RGB Key to refine the contrast, resulting in a complex, organic grit that feels alive and constantly shifting before it hits the final output.', '0115.png')">
+            <video autoplay muted loop><source src="15.mov" type="video/mp4"></video>
+        </div>
+
+        <div class="video-item" onclick="openVideoModal('16.mov', 'In this final stage of my project development, I have successfully bridged the gap between sound and vision by creating an audio-reactive 3D environment. I am using an Audio File In CHOP to drive the entire system, processing the signal through an Audio Spectrum and an Analyze CHOP to extract precise rhythmic data. This data is then funneled through a series of Math and Speed CHOPs to modulate the transformations of multiple geometric instances—including a Sphere and a Torus—which I’ve further deformed using point transforms and noise. By rendering these reactive geometries through a unified camera and light setup, I’ve achieved a pulsating, celestial field of particles that dances in perfect sync with the music, all neatly packaged into KantanMapper for final projection.', '0116.png')">
+            <video autoplay muted loop><source src="16.mov" type="video/mp4"></video>
+        </div>
+
+          <div class="video-item" onclick="openVideoModal('17.mov', 'In this iteration, I am further developing the procedural point cloud system to create a more dense and detailed 3D form. By utilizing a Point Generate SOP as the source and running it through a feedback loop modulated by multiple LFOs, I have created a dynamic, self-evolving cluster that mimics the appearance of a moon or a textured celestial body. This geometry is instanced and rendered with a high-contrast camera setup, and I have added an rgbaDelay TOP at the end of the chain to introduce a subtle temporal blur. This ensures that the movement of the particles feels cohesive and fluid, giving the final output a sense of depth and organic complexity that remains sharp within the 3D space.', '0117.png')">
+            <video autoplay muted loop><source src="17.mov" type="video/mp4"></video>
+        </div>
+
+          <div class="video-item" onclick="openVideoModal('18.mov', 'In this refined sequence of my project, I am focusing on the delicate balance between high-speed instancing and temporal persistence. I have set up a workflow where a Constant CHOP and Speed CHOP drive both the position and scaling of a particle field, which is generated by instancing a simple Circle SOP across a Geometry COMP. By passing the resulting Render TOP through an rgbaDelay, I have introduced a beautiful trailing effect that captures the history of the movement, turning a chaotic burst of points into a cohesive, flowing stream. To finish the look, I applied an RGB Key to isolate the core luminosity and routed it through a Null for a clean, stable output that emphasizes the ethereal, light-driven nature of the animation.', '0118.png')">
+            <video autoplay muted loop><source src="18.mov" type="video/mp4"></video>
+        </div>
+
+        <div class="video-item" onclick="openVideoModal('19.mov', 'In this iteration of the procedural network, I am using a series of Edge TOPs to progressively sharpen the details of a soft Noise TOP, creating a structured, organic ring of light. By branching the signal from edge5 into a Feedback TOP and a Level TOP, I am able to introduce a visual memory where the textures accumulate and evolve over time. I added a Keyboard In CHOP to allow for manual resets of the feedback loop, ensuring the movement remains dynamic rather than static. Finally, the signal is combined through a Composite TOP and passed through a Displace TOP to break up the symmetry, resulting in a gritty, pulsating form that feels both digital and biological before reaching the final output.', '0119.png')">
+            <video autoplay muted loop><source src="19.mov" type="video/mp4"></video>
+        </div>
+
+        
+        <div class="video-item" onclick="openVideoModal('20.mov', 'In this iteration of the procedural network, I have returned to the foundational logic of stacked edge detection to build a high-contrast, granular texture. Starting with a Noise TOP, I have chained five Edge TOPs together to progressively extract and sharpen the structural details of the noise, transforming the soft gradients into a complex web of sharp, white contours. This refined pattern is then stabilized through a Null TOP and sent to the final output before being routed into KantanMapper. By utilizing this linear sequence of edge extraction, I am able to create a dense, organic lattice that is perfectly suited for precise projection mapping onto real-world surfaces, maintaining a balance between digital grit and geometric clarity.', '0120.png')">
+            <video autoplay muted loop><source src="20.mov" type="video/mp4"></video>
+        </div>
+
+        <div class="wide-video-item" onclick="openVideoModal('021.mov', 'In this practical phase of the project, I focused on the live implementation of KantanMapper to bridge the gap between procedural digital content and physical architecture. Using a hardware projector, I performed precise geometric calibration to map my generated visuals onto complex real-world surfaces. Initially, I defined custom freeform masks in the KantanMapper interface to match the irregular, hexagonal contours of the blue physical structure in the lab. I then extended this logical setup to include the adjacent whiteboard. By meticulously adjusting the Texture coordinates—specifically the scale and UV positioning—I was able to span a single procedural animation across these distinct surfaces. This allowed a unified visual signal to flow seamlessly from the 3D object onto the flat whiteboard, effectively treating the entire spatial arrangement as one continuous canvas. This step demonstrates the versatility of the system in adapting digital grit and organic textures to a multi-dimensional environment.', '0222.png', '02221.mov')">
+            <video autoplay muted loop playsinline><source src="021.mov" type="video/mp4"></video>
+        </div>
+
+    </div>
+
+    <div class="cta-section">
+        <a href="javascript:void(0)" onclick="scrollToTop()" class="btn">BACK TO TOP</a>
+    </div>
+</div>
+
+<div id="videoModal" class="modal-overlay" onclick="closeVideoModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <span class="modal-close" onclick="closeVideoModal()">&times;</span>
+        <div class="modal-title">Documentation</div>
+        <div class="modal-video-container">
+            <video id="modalVideoSource" controls autoplay loop muted></video>
+        </div>
+        <div id="modalDescription" class="modal-text"></div>
+        <img id="modalImageSource" class="modal-image" src="" alt="Documentation Process">
+        
+        <div id="extra-video-wrapper">
+            <div class="extra-video-box">
+                <video id="extraVideoSource" autoplay loop muted playsinline></video>
+            </div>
+            <div id="extra-caption-text" class="extra-caption"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openVideoModal(videoSrc, text, imageSrc, extraVideoSrc = null, extraCaption = "") {
+        const modal = document.getElementById('videoModal');
+        const video = document.getElementById('modalVideoSource');
+        const description = document.getElementById('modalDescription');
+        const image = document.getElementById('modalImageSource');
+        
+        const extraWrapper = document.getElementById('extra-video-wrapper');
+        const extraVideo = document.getElementById('extraVideoSource');
+        const extraText = document.getElementById('extra-caption-text');
+
+        video.src = videoSrc;
+        description.innerText = text;
+        image.src = imageSrc;
+
+        // 处理额外视频逻辑
+        if (extraVideoSrc) {
+            extraVideo.src = extraVideoSrc;
+            extraText.innerText = extraCaption;
+            extraWrapper.style.display = 'block';
+        } else {
+            extraWrapper.style.display = 'none';
+            extraVideo.src = "";
+        }
+
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeVideoModal() {
+        const modal = document.getElementById('videoModal');
+        const video = document.getElementById('modalVideoSource');
+        const extraVideo = document.getElementById('extraVideoSource');
+        
+        modal.style.display = 'none';
+        video.pause(); video.src = "";
+        extraVideo.pause(); extraVideo.src = "";
+        document.body.style.overflow = 'auto';
+    }
+
+    function scrollToTop() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeVideoModal();
+    });
+</script>
+
+</body>
+</html>
