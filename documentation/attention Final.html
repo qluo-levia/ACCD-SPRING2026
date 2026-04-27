@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Archeology of the Futures - Attenu</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,600;1,400&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
+
+<style>
+:root {
+--bg-color: #ffffff;
+--text-dark: #332B27;
+--text-light: #FFFFFF;
+--btn-color: #2B2A29;
+--accent-gray: #7A6F68;
+--border-light: #eeeeee;
+--overlay-bg: rgba(43, 42, 41, 0.85); /* 弹窗背后的半透明深色 */
+--modal-bg: #f4f4f4; /* 弹窗的灰色背景 */
+}
+
+/* ...（保留你之前的 CSS）... */
+* { box-sizing: border-box; }
+body { margin: 0; padding: 0; background-color: var(--bg-color); font-family: 'Montserrat', sans-serif; color: var(--text-dark); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+.container { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
+.hero { position: relative; height: 80vh; min-height: 400px; background-color: #D6CEC4; background-image: url('bubble08.png'); background-size: cover; background-position: center; display: flex; align-items: center; padding: 40px; overflow: hidden; }
+.hero::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to right, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0) 100%); }
+.hero h1 { position: relative; z-index: 2; font-size: 5rem; margin: 0; color: var(--text-light); font-weight: 400; letter-spacing: 2px; }
+.section-title { text-align: center; margin: 80px 0 60px; font-size: 1.4rem; letter-spacing: 1.5px; font-weight: 600; text-transform: uppercase; }
+.features-layout { display: flex; gap: 100px; margin-bottom: 100px; align-items: flex-start; }
+.features-images { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+.features-images img { width: 100%; object-fit: contain; }
+.features-images .img-large { width: 115%; height: 400px; margin-top: -95px; }
+.features-images .img-small { width: 115%; height: 400px; margin-top: -100px; }
+.features-text { flex: 1; display: flex; flex-direction: column; justify-content: flex-start; }
+.text-item p { margin: 0 0 25px 0; font-size: 0.85rem; line-height: 1.8; color: #555; }
+.moodboard-item { margin-top: 30px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; font-size: 0.8rem; }
+.sub-heading { text-align: center; font-size: 1.2rem; font-weight: 600; letter-spacing: 4px; margin: 80px 0 40px; text-transform: uppercase; border-top: 1px solid var(--border-light); padding-top: 40px; }
+.sketch-intro { display: grid; grid-template-columns: 1.2fr 1fr; gap: 50px; margin-bottom: 100px; align-items: start; }
+.sketch-img img { width: 100%; height: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+.sketch-desc p { font-size: 0.85rem; line-height: 1.6; margin: 0; }
+.process-grid { display: flex; flex-direction: column; gap: 20px; margin-bottom: 100px; }
+.process-row-1, .process-row-2 { display: grid; gap: 15px; }
+.process-row-1 { grid-template-columns: repeat(4, 1fr); }
+.process-row-2 { grid-template-columns: repeat(4, 1fr); }
+
+/* 板块交互设计 */
+.process-step {
+    background: #fafafa;
+    padding: 12px;
+    border: 1px solid #f0f0f0;
+    cursor: pointer; /* 鼠标悬停变手型 */
+    transition: transform 0.3s ease, border-color 0.3s ease;
+}
+.process-step:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent-gray);
+}
+.process-step img { width: 100%; height: auto; margin-bottom: 12px; display: block; }
+.step-num { display: block; font-size: 0.65rem; font-weight: 600; color: var(--accent-gray); margin-bottom: 8px; letter-spacing: 1px; }
+.process-step p { font-size: 0.7rem; line-height: 1.5; color: #777; margin: 0; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.split-step-img { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+.split-step-text { display: flex; justify-content: space-between; font-size: 0.6rem; color: #999; text-transform: uppercase; }
+
+/* === 弹窗 (Modal) 样式 === */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: var(--overlay-bg);
+    display: none; /* 默认隐藏 */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+.modal-content {
+    background: var(--modal-bg);
+    width: 90%;
+    max-width: 700px;
+    padding: 40px;
+    position: relative;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    animation: fadeInScale 0.4s ease forwards;
+}
+@keyframes fadeInScale {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+.modal-close {
+    position: absolute;
+    top: 15px; right: 20px;
+    font-size: 2rem;
+    cursor: pointer;
+    color: var(--accent-gray);
+    line-height: 1;
+}
+.modal-img {
+    width: 100%;
+    height: auto;
+    max-height: 400px;
+    object-fit: contain;
+    margin-bottom: 30px;
+    background: #fff;
+    padding: 10px;
+}
+.modal-text-title {
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    color: var(--accent-gray);
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+}
+.modal-text-desc {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--text-dark);
+}
+
+.cta-section { text-align: center; margin: 50px 0; border-top: 1px solid var(--border-light); padding-top: 30px; }
+.btn { display: inline-block; background-color: var(--btn-color); color: var(--text-light); padding: 16px 45px; border-radius: 30px; text-decoration: none; font-size: 0.8rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; transition: opacity 0.3s; }
+.btn:hover { opacity: 0.8; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+<h1>ATTENU</h1>
+</div>
+
+<div class="container">
+<div class="section-title">CONCEPT</div>
+<div class="features-layout">
+<div class="features-images">
+<img src="01.png" alt="Concept 01" class="img-large">
+<img src="02.png" alt="Concept 02" class="img-small">
+</div>
+<div class="features-text">
+<div class="text-item"><p>In this future, human attention is measured and managed as a finite form of energy. Similar to the way electric vehicles display remaining battery range, individuals can perceive how much attention they have available throughout the day. Sleep, physical activity, and environmental exposure continuously influence this capacity, replenishing or depleting attention in measurable ways.</p></div>
+<div class="text-item"><p>Everyday actions are associated with estimated attention costs. Reading, decision-making, social interaction, and creative work require different levels of cognitive energy, presented not as abstract metrics but as clear, legible values. Rather than maximizing productivity, the system encourages conscious allocation — choosing when to spend attention and when to conserve it.</p></div>
+<div class="text-item"><p>To preserve attention, individuals can intentionally reduce sensory input. Visual stimuli are softened, notifications filtered, and environments simplified. By lowering perceptual noise, attention is stored rather than consumed, reserved for tasks that demand depth, care, or sustained focus. The object representing this future does not optimize life, but reframes attention as something valuable enough to be protected.</p></div>
+
+</div>
+</div>
+
+<div class="sub-heading">DOCUMENTATION / SKETCH</div>
+
+<section class="sketch-intro">
+<div class="sketch-img"><img src="sketch_drawing.jpg" alt="Sketch Drawing"></div>
+<div class="sketch-desc">
+<p>In this future, attention is understood not as a fixed quantity within the body, but as a surrounding field that expands and contracts over time. The Attention Bubble visualizes remaining cognitive capacity as a spatial condition — a semi-transparent envelope that becomes denser, noisier, or fragmented as attention is consumed.</p>
+                <p>Rather than interacting with the body directly, the bubble regulates perception by filtering sensory input. As its surface thickens, visual clarity softens and external stimuli are diffused, allowing attention to be conserved. When the bubble thins or fractures, attention is exposed, depleted, and more easily overwhelmed. The object does not optimize focus, but externalizes attention as a fragile, finite environment.</p>
+</div>
+</section>
+
+<div class="process-grid">
+    <div class="process-row-1">
+        <div class="process-step" onclick="openModal('01 / GEOMETRY', 'step01.png', 'Initial construction began with a basic sphere. Smooth shading was applied to create the fundamental surface for subsequent noise-based deformations.')">
+            <span class="step-num">01 / GEOMETRY</span>
+            <div class="split-step-img"><img src="step01.png" alt="Sphere Base"></div>
+            <div class="split-step-text"><span>Sphere Base</span><span>Smooth shading</span></div>
+            <p>Begin with sphere and apply smooth shading.</p>
+        </div>
+        <div class="process-step" onclick="openModal('02 / DEFORMATION', 'step02.png', 'Incorporated Geometry Nodes with noise textures. This setup introduces organic, irregular fluctuations to the sphere’s surface, reflecting the unstable nature of cognitive energy.')">
+            <span class="step-num">02 / DEFORMATION</span>
+            <img src="step02.png" alt="Noise Texture">
+            <p>Add Geometry Node and Noise Texture to make the form feel irregular and organic.</p>
+        </div>
+        <div class="process-step" onclick="openModal('03 / COORDINATES', 'step03.png', 'A Subtract node based on the active camera view was implemented to align the sphere perfectly within the visual coordinate axes.')">
+            <span class="step-num">03 / COORDINATES</span>
+            <img src="step03.png" alt="Subtract Node">
+            <p>Use a Subtract node based on camera view to align the sphere.</p>
+        </div>
+        <div class="process-step" onclick="openModal('04 / FORM REFINE', 'step04.png', 'Fine-tuned noise parameters to define the core density of the bubble. This step establishes the spatial presence of the object.')">
+            <span class="step-num">04 / FORM REFINE</span>
+            <img src="step04.png" alt="Parameters">
+            <p>Adjust noise parameters to define the bubble’s core density.</p>
+        </div>
+    </div>
+
+    <div class="process-row-2">
+        <div class="process-step" onclick="openModal('05 / TEXTURE', 'step05.png', 'Refined transparency and IOR (Index of Refraction). A psychedelic texture was layered to enhance lighting contrast and simulate internal energy shifts.')">
+            <span class="step-num">05 / TEXTURE</span>
+            <img src="step05.png" alt="Psychedelic Texture">
+            <p>Refine transparency and IOR. Apply psychedelic texture.</p>
+        </div>
+        <div class="process-step" onclick="openModal('06 / LIGHTING', 'step06.png', 'Introduced environment sunlight. Warm yellow tones were chosen to counterbalance the dominant accumulated-energy purple, creating depth.')">
+            <span class="step-num">06 / LIGHTING</span>
+            <img src="step06.png" alt="Environment Light">
+            <p>Introduce sunlight to create reflections and balance colors.</p>
+        </div>
+        <div class="process-step" onclick="openModal('07 / RECONSTRUCTION', 'step07.png', 'Manual reconstruction in Edit Mode. The final rigid section utilizes a dual-semicircle structure to read as a single enclosed entity.')">
+            <span class="step-num">07 / RECONSTRUCTION</span>
+            <img src="step07.png" alt="Final Model">
+            <p>Finalize in Edit Mode using dual-semicircle structures.</p>
+        </div>
+        <div class="process-step" onclick="openModal('08 / SCENE SETUP', 'step08.png', 'Final scene construction. A background plane was added either as two separate planes or a single rotated edge to provide a sense of scale.')">
+            <span class="step-num">08 / SCENE SETUP</span>
+            <img src="step08.png" alt="Render Setup">
+            <p>Final construction and rendering setup with background planes.</p>
+        </div>
+    </div>
+</div>
+
+<div class="cta-section">
+<a href="javascript:void(0)" onclick="scrollToTop()" class="btn">BACK TO TOP</a>
+</div>
+
+</div>
+
+<div id="infoModal" class="modal-overlay" onclick="closeModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <span class="modal-close" onclick="closeModal()">&times;</span>
+        <img id="modalImg" class="modal-img" src="" alt="Detail View">
+        <div id="modalTitle" class="modal-text-title"></div>
+        <div id="modalDesc" class="modal-text-desc"></div>
+    </div>
+</div>
+
+<script>
+    function openModal(title, imgSrc, desc) {
+        document.getElementById('modalTitle').innerText = title;
+        document.getElementById('modalImg').src = imgSrc;
+        document.getElementById('modalDesc').innerText = desc;
+        document.getElementById('infoModal').style.display = 'flex';
+        // 禁止背景滚动
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        document.getElementById('infoModal').style.display = 'none';
+        // 恢复滚动
+        document.body.style.overflow = 'auto';
+    }
+
+    // 点击 Esc 键关闭
+    window.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') closeModal();
+    });
+
+    // 丝滑滚动回到顶部
+    function scrollToTop() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }
+</script>
+
+</body>
+</html>
